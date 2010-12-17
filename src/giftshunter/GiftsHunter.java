@@ -1,21 +1,26 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package giftshunter;
 
-/**
- *
- * @author fealaer
- */
-public class GiftsHunter {
+import java.awt.EventQueue;
+import javax.swing.JFrame;
 
+/**
+ * @version 0.1.0 2010-12-17
+ * @author Pushkarev Andrey [fealaer@gmail.com]
+ */
+public class GiftsHunter
+{
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        EventQueue.invokeLater(new Runnable() {
+
+            public void run() {
+                GameFrame frame = new GameFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
     }
 
 }
