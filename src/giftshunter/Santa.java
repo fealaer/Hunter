@@ -1,130 +1,153 @@
 package giftshunter;
 
 import java.awt.*;
-import java.awt.geom.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import javax.swing.JComponent;
+import java.util.*;
+import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 /**
  * @version 0.1.0 2010-12-17
  * @author Pushkarev Andrey [fealaer@gmail.com]
  */
-public class Santa extends JComponent
+class Santa extends JComponent
 {
-    public Santa()
-    {
-        gifts = new ArrayList<Rectangle2D>();
-        current = null;
 
-        addMouseListener(new MouseHandler());
-        addMouseMotionListener(new MouseMotionHandler());
-    }
+	public Santa()
+	{
+		gifts = new ArrayList<Rectangle2D>();
+		current = null;
 
-    public void paintGift(Graphics g)
-    {
-        Graphics2D g2 = (Graphics2D) g;
+		addMouseListener(new MouseHandler());
+		addMouseMotionListener(new MouseMotionHandler());
+	}
 
-        g2.setColor(Color.RED);
-        for (Rectangle2D gift: gifts)
-        {
-            g2.draw(gift);
-        }
-    }
+	@Override
+	public void paintComponent(Graphics g)
+	{
+		Graphics2D g2 = (Graphics2D) g;
+		setImagePaint("gift.jpg");
+		// draw all squares
+		for (Rectangle2D gift : gifts)
+		{
+			g2.setPaint(new TexturePaint(image, gift));
+			g2.fill(gift);
+			g2.draw(gift);
+		}
+	}
 
-    public Rectangle2D find(Point2D p)
-    {
-        for (Rectangle2D gift: gifts)
-        {
-            if (gift.contains(p))
-            {
-                return gift;
-            }
-        }
-        return null;
-    }
+	/**
+	 * Finds the first square containing a point.
+	 * @param p a point
+	 * @return the first square that contains p
+	 */
+	public Rectangle2D find(Point2D p)
+	{
+		for (Rectangle2D gift : gifts)
+		{
+			if (gift.contains((Point) p))
+			{
+				return gift;
+			}
+		}
+		return null;
+	}
 
-    public void add(Point2D p)
-    {
-        double x = p.getX();
-        double y = p.getY();
+	/**
+	 * Adds a square to the collection.
+	 * @param p the center of the square
+	 */
+	public void add(Point2D p)
+	{
+		double x = p.getX();
+		double y = p.getY();
 
-        current = new Rectangle2D.Double(x - SIDELENGTH / 2,
-                                         y - SIDELENGTH / 2,
-                                         SIDELENGTH,
-                                         SIDELENGTH);
-        gifts.add(current);
-        repaint();
-    }
+		current = new Rectangle2D.Double(x - SIDELENGTH / 2,
+										 y - SIDELENGTH / 2,
+										 SIDELENGTH,
+										 SIDELENGTH);
+		gifts.add(current);
+		repaint();
 
-    public void remove(Rectangle2D gift)
-    {
-        if (gift == null)
-        {
-            return;
-        }
-        if (gift == current)
-        {
-            current = null;
-        }
-        gifts.remove(gift);
-        repaint();
-    }
 
-    private static final int SIDELENGTH = 100;
-    private ArrayList<Rectangle2D> gifts;
-    private Rectangle2D current;
+	}
 
-    private class MouseHandler extends MouseAdapter
-    {
-        @Override
-        public void mousePressed(MouseEvent event)
-        {
-            Rectangle2D current = find(event.getPoint());
-            if(current == null)
-            {
-                add(event.getPoint());
-            }
-        }
+	public void setImagePaint(String ImageFile)
+	{
+		GiftImage ig = new GiftImage(ImageFile);
+		image = ig.getGiftImage();
 
-        @Override
-        public void mouseClicked(MouseEvent event)
-        {
-            current = find(event.getPoint());
-            if (current == null)
-            {
-                add(event.getPoint());
-            }
-        }
-    }
+	}
 
-    private class MouseMotionHandler implements MouseMotionListener
-    {
-        public void mouseMoved(MouseEvent event)
-        {
-            if (find(event.getPoint()) == null)
-            {
-                setCursor(Cursor.getDefaultCursor());
-            }
-            else
-            {
-                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-            }
-        }
+	/**
+	 * Removes a square from the collection.
+	 * @param s the square to remove
+	 */
+	public void remove(Rectangle2D s)
+	{
+		if (s == null)
+		{
+			return;
+		}
+		if (s == current)
+		{
+			current = null;
+		}
+		gifts.remove(s);
+		repaint();
+	}
+	private ArrayList<Rectangle2D> gifts;
+	private Rectangle2D current;
+	private static final int SIDELENGTH = 25;
+	private BufferedImage image;
+	private int score;
 
-        public void mouseDragged(MouseEvent event)
-        {
-            if (current != null)
-            {
-                int x = event.getX();
-                int y = event.getY();
+	// the square containing the mouse cursor
+	private class MouseHandler extends MouseAdapter
+	{
 
-                current.setFrame(x - SIDELENGTH / 2,
-                                 y - SIDELENGTH / 2,
-                                 SIDELENGTH,
-                                 SIDELENGTH);
-                repaint();
-            }
-        }
-    }
+		@Override
+		public void mousePressed(MouseEvent event)
+		{
+			// add a new square if the cursor isn't inside a square
+			current = find(event.getPoint());
+			if (current != null && event.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK)
+			{
+				remove(current);
+				++score;
+			}
+			else if (current == null && event.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK)
+			{
+				--score;
+			}
+			else if (current == null && event.getModifiersEx() == MouseEvent.BUTTON3_DOWN_MASK)
+			{
+				add(event.getPoint());
+			}
+		}
+	}
+
+	private class MouseMotionHandler implements MouseMotionListener
+	{
+
+		public void mouseMoved(MouseEvent event)
+		{
+			// set the mouse cursor to cross hairs if it is inside
+			// a rectangle
+
+			if (find(event.getPoint()) == null)
+			{
+				setCursor(Cursor.getDefaultCursor());
+			}
+			else
+			{
+				setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+			}
+		}
+
+		public void mouseDragged(MouseEvent event)
+		{
+		}
+	}
 }

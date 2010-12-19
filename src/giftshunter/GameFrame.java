@@ -1,6 +1,6 @@
 package giftshunter;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  * @version 0.1.0 2010-12-17
@@ -8,15 +8,16 @@ import javax.swing.JFrame;
  */
 class GameFrame extends JFrame
 {
-    public GameFrame()
-    {
-        setTitle("Gifts Hunter Game");
-        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-        Santa santa = new Santa();
-        add(santa);
-    }
+	public GameFrame()
+	{
+		setTitle("Gifts Hunter");
+		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-    public static final int DEFAULT_WIDTH = 300;
-    public static final int DEFAULT_HEIGHT = 300;
+		// add component to frame
+		Santa component = new Santa();
+		add(component);
+	}
+	public static final int DEFAULT_WIDTH = 600;
+	public static final int DEFAULT_HEIGHT = 600;
 }
