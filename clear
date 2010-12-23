@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cd ./class
+rm -f *.class
+cd ..

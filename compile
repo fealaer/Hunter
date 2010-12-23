@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd ./class
+rm -f *.class
+cd ..
+
+javac -sourcepath ./src/ -d ./class/ ./src/GiftsHunter.java
