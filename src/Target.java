@@ -1,0 +1,5 @@
+
+class Target extends JComponent
+{
+
+}

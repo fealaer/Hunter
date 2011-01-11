@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 /**
  * @version 0.1.0 2010-12-17
@@ -11,11 +14,13 @@ class GameFrame extends JFrame
 	{
 		setTitle("Gifts Hunter");
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		
 
 		// add component to frame
-		Santa component = new Santa();
+		Thrower component = new Thrower();
 		add(component);
 	}
-	public static final int DEFAULT_WIDTH = 600;
-	public static final int DEFAULT_HEIGHT = 600;
+	
+	public static final int DEFAULT_WIDTH = 1024;
+	public static final int DEFAULT_HEIGHT = 788;
 }

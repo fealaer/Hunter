@@ -4,4 +4,4 @@ cd ./class
 rm -f *.class
 cd ..
 
-javac -sourcepath ./src/ -d ./class/ ./src/GiftsHunter.java
+javac -sourcepath ./src/ -d ./class/ ./src/Hunter.java
