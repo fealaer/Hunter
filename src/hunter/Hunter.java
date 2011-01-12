@@ -1,3 +1,5 @@
+package hunter;
+
 import java.awt.*;
 import javax.swing.*;
 

@@ -1,8 +1,9 @@
+package hunter;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.IOException;
-import java.util.logging.*;
 import javax.imageio.ImageIO;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
@@ -19,7 +20,7 @@ class Thrower extends JComponent
 	{
 		targets = new ArrayList<Rectangle2D>();
 		current = null;
-		imageFile = "img/718517.jpg";
+		imageFile = "img/bg.jpg";
 		
 		addMouseListener(new MouseHandler());
 		addMouseMotionListener(new MouseMotionHandler());
@@ -78,9 +79,9 @@ class Thrower extends JComponent
 		double y = p.getY();
 
 		current = new Rectangle2D.Double(x - SIDELENGTH / 2,
-										 y - SIDELENGTH / 2,
-										 SIDELENGTH,
-										 SIDELENGTH);
+                                                 y - SIDELENGTH / 2,
+                                                 SIDELENGTH,
+                                                 SIDELENGTH);
 		targets.add(current);
 		repaint();
 

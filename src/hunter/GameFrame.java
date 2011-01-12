@@ -1,7 +1,6 @@
+package hunter;
+
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 /**
  * @version 0.1.0 2010-12-17

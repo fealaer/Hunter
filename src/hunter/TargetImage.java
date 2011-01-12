@@ -1,6 +1,7 @@
+package hunter;
+
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.logging.*;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
@@ -14,13 +15,13 @@ import javax.swing.JComponent;
  * using MediaTracker to wait until an image or several images
  * are done loading.
  */
-public class GiftImage extends JComponent
+public class TargetImage extends JComponent
 {
 
 	/** Create Image from a file, then turn that into a
 	 * BufferedImage.
 	 */
-	public GiftImage(String imageFile)
+	public TargetImage(String imageFile)
 	{
 		try
 		{
@@ -28,11 +29,11 @@ public class GiftImage extends JComponent
 		}
 		catch (IOException ex)
 		{
-			Logger.getLogger(Santa.class.getName()).log(Level.SEVERE, null, ex);
+			ex.printStackTrace();
 		}
 	}
 
-	public BufferedImage getGiftImage()
+	public BufferedImage getTargetImage()
 	{
 		return bufferedImage;
 	}
