@@ -57,7 +57,7 @@ class Thrower extends JComponent
 	 * @param p a point
 	 * @return the first square that contains p
 	 */
-	public Rectangle2D find(Point2D p)
+	private Rectangle2D find(Point2D p)
 	{
 		for (Rectangle2D target : targets)
 		{
@@ -73,7 +73,7 @@ class Thrower extends JComponent
 	 * Adds a square to the collection.
 	 * @param p the center of the square
 	 */
-	public void add(Point2D p)
+	private void add(Point2D p)
 	{
 		double x = p.getX();
 		double y = p.getY();
@@ -88,7 +88,7 @@ class Thrower extends JComponent
 
 	}
 
-	public void setImagePaint(String ImageFile)
+	private void setImagePaint(String ImageFile)
 	{
 		TargetImage ig = new TargetImage(ImageFile);
 		image = ig.getTargetImage();
@@ -99,7 +99,7 @@ class Thrower extends JComponent
 	 * Removes a square from the collection.
 	 * @param s the square to remove
 	 */
-	public void remove(Rectangle2D s)
+	private void remove(Rectangle2D s)
 	{
 		if (s == null)
 		{
