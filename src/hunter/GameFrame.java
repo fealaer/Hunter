@@ -13,13 +13,14 @@ class GameFrame extends JFrame
 	{
 		setTitle("Gifts Hunter");
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
 		
 
 		// add component to frame
-		Thrower component = new Thrower();
+		PlayArea component = new PlayArea (50, DEFAULT_WIDTH, DEFAULT_HEIGHT - 80, "img/backgrounds/bg1_sign.png");
 		add(component);
 	}
 	
-	public static final int DEFAULT_WIDTH = 1024;
-	public static final int DEFAULT_HEIGHT = 788;
+	public static final int DEFAULT_WIDTH = 800;
+	public static final int DEFAULT_HEIGHT = 630;
 }

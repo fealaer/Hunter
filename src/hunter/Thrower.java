@@ -1,170 +1,154 @@
 package hunter;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import javax.swing.*;
+import java.util.*;
 
 /**
  * @version 0.1.0 2010-12-17
  * @author Pushkarev Andrey [fealaer@gmail.com]
  */
-class Thrower extends JComponent
+class Thrower
 {
 
-	public Thrower()
+	public Thrower(int amount, int width, int height)
 	{
-		targets = new ArrayList<Rectangle2D>();
-		current = null;
-		imageFile = "img/bg.jpg";
-		
-		addMouseListener(new MouseHandler());
-		addMouseMotionListener(new MouseMotionHandler());
+		nTargets = amount;
+		this.width = width;
+		this.height = height;
+
+		TargetImages.add("img/targets/gift1.png");
+		TargetImages.add("img/targets/gift2.png");
+		TargetImages.add("img/targets/gift3.png");
+		TargetImages.add("img/targets/gift4.png");
+		TargetImages.add("img/targets/gift5.png");
+
+		imagesSize = TargetImages.getSize();
+
+		int part = nTargets / 5;
+
+
+
+		for (int i = 0; i < part; i++)
+		{
+			add();
+		}
 	}
 
-	@Override
-	public void paintComponent(Graphics g)
+	public int getTargetsSize()
 	{
-		if (bg == null)
+		return targets.size();
+	}
+
+	public void drawTargets(Graphics2D g2)
+	{
+		if (nTargets > 0)
 		{
-			try
+			add();
+		}
+		for (int i = 0; i < targets.size(); i++)
+		{
+			Target tr = (Target) targets.get(i);
+			if (!tr.move(g2))
 			{
-				bg = ImageIO.read(this.getClass().getResource(imageFile));
-			}
-			catch (IOException ex)
-			{
-				ex.printStackTrace();
+				targets.remove(tr);
 			}
 		}
-		g.drawImage(bg,0,0,this);
-		Graphics2D g2 = (Graphics2D) g;
-		setImagePaint("img/gift.png");
-		// draw all squares
-		for (Rectangle2D target : targets)
+	}
+
+	synchronized public boolean shoot(Point2D p)
+	{
+		Target tr = this.find(p);
+		if (tr == null)
 		{
-			g2.setPaint(new TexturePaint(image, target));
-			g2.fill(target);
-			g2.draw(target);
+			return false;
 		}
+		remove(tr);
+		return true;
 	}
 
 	/**
-	 * Finds the first square containing a point.
+	 * Finds the first target containing a point.
+	 * 
 	 * @param p a point
-	 * @return the first square that contains p
+	 * @return the first target that contains p
 	 */
-	private Rectangle2D find(Point2D p)
+	public Target find(Point2D p)
 	{
-		for (Rectangle2D target : targets)
+		int count = targets.size();
+		for (int i = 0; i < count; i++)
 		{
-			if (target.contains((Point) p))
+			Target tr = (Target) targets.get(i);
+			Rectangle2D square = tr.getTargetSquare();
+			if (square.contains((Point) p))
 			{
-				return target;
+				return tr;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Adds a square to the collection.
-	 * @param p the center of the square
+	 * Adds a target to the collection.
 	 */
-	private void add(Point2D p)
+	private void add()
 	{
-		double x = p.getX();
-		double y = p.getY();
-
-		current = new Rectangle2D.Double(x - SIDELENGTH / 2,
-                                                 y - SIDELENGTH / 2,
-                                                 SIDELENGTH,
-                                                 SIDELENGTH);
-		targets.add(current);
-		repaint();
-
-
+		int sidelength = random(SIDELENGTH - (SIDELENGTH / 2)) + SIDELENGTH / 2;
+		int x = random(width - SIDELENGTH) + sidelength;
+		int y = 0;
+		int imageIndex = random(imagesSize);
+		int velocity = (sidelength / 5) + 1;
+		int pause = random(height / 2) + SIDELENGTH;
+		targets.add(new Target(x, y, sidelength, pause, imageIndex, velocity, height));
+		--nTargets;
 	}
 
-	private void setImagePaint(String ImageFile)
+	/**
+	 *  Obtain a randomly-selected integer between 0 and a limit.
+	 *
+	 *  @param limit one more than the largest integer that can be returned
+	 *
+	 *  @return an integer ranging from 0 through limit-1
+	 */
+	private int random(int limit)
 	{
-		TargetImage ig = new TargetImage(ImageFile);
-		image = ig.getTargetImage();
-
+		return (int) (Math.random() * limit);
 	}
 
 	/**
 	 * Removes a square from the collection.
 	 * @param s the square to remove
 	 */
-	private void remove(Rectangle2D s)
+	private void remove(Target s)
 	{
 		if (s == null)
 		{
 			return;
 		}
-		if (s == current)
-		{
-			current = null;
-		}
+
 		targets.remove(s);
-		repaint();
 	}
-	private ArrayList<Rectangle2D> targets;
-	private Rectangle2D current;
-	private static final int SIDELENGTH = 25;
-	private BufferedImage image;
-	private BufferedImage bg;
-	private int score;
-	private String imageFile;
-
-	// the square containing the mouse cursor
-	private class MouseHandler extends MouseAdapter
-	{
-
-		@Override
-		public void mousePressed(MouseEvent event)
-		{
-			// add a new square if the cursor isn't inside a square
-			current = find(event.getPoint());
-			if (current != null && event.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK)
-			{
-				remove(current);
-				++score;
-			}
-			else if (current == null && event.getModifiersEx() == MouseEvent.BUTTON1_DOWN_MASK)
-			{
-				--score;
-			}
-			else if (current == null && event.getModifiersEx() == MouseEvent.BUTTON3_DOWN_MASK)
-			{
-				add(event.getPoint());
-			}
-		}
-	}
-
-	private class MouseMotionHandler implements MouseMotionListener
-	{
-
-		public void mouseMoved(MouseEvent event)
-		{
-			// set the mouse cursor to cross hairs if it is inside
-			// a rectangle
-
-			if (find(event.getPoint()) == null)
-			{
-				setCursor(Cursor.getDefaultCursor());
-			}
-			else
-			{
-				setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-			}
-		}
-
-		public void mouseDragged(MouseEvent event)
-		{
-		}
-	}
+	/**
+	 *  Side length of largest Target. Target inscribed in square.
+	 */
+	private static final int SIDELENGTH = 40;
+	/**
+	 * Data structure for managing Target objects.
+	 */
+	private Vector targets = new Vector();
+	/**
+	 * Number of Targets objects managed by this game
+	 */
+	private int nTargets;
+	/**
+	 *  Frame height. Passed to each Target object's constructor and also
+	 *  used to determine image buffer height.
+	 */
+	private int height;
+	/**
+	 *  Frame height. Passed to each Target object's constructor and also
+	 *  used to determine target destroy
+	 */
+	private int width;
+	private int imagesSize;
 }

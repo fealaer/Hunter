@@ -155,7 +155,7 @@ class Snowflake
     *
     *  @param g graphics device on which snowflake is painted
     */
-   void move (Graphics2D g)
+   public void move (Graphics2D g)
    {
         if (--pause >= 0)
         {
