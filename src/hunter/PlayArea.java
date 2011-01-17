@@ -13,7 +13,6 @@ import javax.swing.*;
  */
 public class PlayArea extends JComponent
 {
-
 	public PlayArea(int nTargets, int width, int height, String bgImg)
 	{
 		try
